@@ -1,0 +1,171 @@
+.monitor-goods-setting {
+  width: 800px;
+  background: #fff;
+  border-radius: 4px;
+  > .title {
+    line-height: 48px;
+    font-size: 18px;
+    color: #262A33;
+    border-bottom: 1px solid #C7CBD4;
+    padding-left: 14px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    &:before {
+      content: '';
+      margin-right: 6px;
+      width: 4px;
+      height: 18px;
+      background: #1A92F4;
+      border-radius: 10px;
+    }
+    .close {
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: 48px;
+      text-align: center;
+      line-height: 48px;
+      font-size: 20px;
+      border-top-right-radius: 4px;
+      &:before {
+        content: '×';
+      }
+      &:hover {
+        background-color: #EC3E27;
+        color: #fff;
+      }
+    }
+  }
+
+  .content {
+    display: flex;
+    height: 408px;
+    margin-bottom: 5px;
+    > div {
+      flex: 1;
+      width: 50%;
+      display: flex;
+      flex-direction: column;
+      > .title {
+        font-size: 12px;
+        color: #7E868C;
+        height: 40px;
+        width: 100%;
+        text-indent: 14px;
+        line-height: 40px;
+      }
+      > .search {
+        position: relative;
+        display: flex;
+        input {
+          width: 360px;
+          height: 30px;
+          border-radius: 4px;
+          border: 1px solid #bcc1cc;
+          font-size: 14px;
+          padding: 0 6px;
+          box-sizing: border-box;
+          outline: none;
+          margin: 5px auto;
+        }
+        > div {
+          position: absolute;
+          right: 29px;
+          top: 7px;
+          font-size: 18px;
+          color: #7E868C;
+          cursor: pointer;
+          &:before {
+            content: "\f002";
+            font-family: FontAwesome;
+          }
+        }
+      }
+      .items {
+        flex: 1;
+        overflow: auto;
+        &::-webkit-scrollbar {
+          width: 8px;
+          background-color: transparent;
+        }
+        &::-webkit-scrollbar-thumb {
+          background-color: #BCC1CC;
+          border-radius: 10px;
+        }
+        .item {
+          text-overflow: ellipsis;
+          overflow: hidden;
+          word-break: keep-all;
+          white-space: nowrap;
+          box-sizing: border-box;
+          line-height: 30px;
+          &.left {
+            text-indent: 14px;
+            cursor: pointer;
+            padding-right: 25px;
+            margin-right: 5px;
+            background: url("../../../../image/modules/table/checkbox.png") no-repeat center right;
+            &.active {
+              background-image: url("../../../../image/modules/table/checkbox_checked.png");
+            }
+          }
+          &.right {
+            display: flex;
+            justify-content: space-between;
+            .title {
+              text-overflow: ellipsis;
+              overflow: hidden;
+              word-break: keep-all;
+              white-space: nowrap;
+              box-sizing: border-box;
+              text-indent: 14px;
+            }
+            .control {
+              width: 60px;
+              flex-shrink: 0;
+              font-size: 18px;
+              display: flex;
+              margin-left: 5px;
+              > div {
+                width: 20px;
+                height: 20px;
+                color: #7e868c;
+                &.up {
+                  &:before {
+                    font-family: FontAwesome;
+                    content: "\f062";
+                  }
+                }
+                &.down {
+                  &:before {
+                    font-family: FontAwesome;
+                    content: "\f063";
+                  }
+                }
+                &.close {
+                  &:before {
+                    font-family: FontAwesome;
+                    content: "\f00d";
+                  }
+                }
+              }
+            }
+          }
+          &:first-child {
+            .up {
+              color: #dae3e5 !important;
+              cursor: not-allowed;
+            }
+          }
+          &:last-child {
+            .down {
+              color: #dae3e5 !important;
+              cursor: not-allowed;
+            }
+          }
+        }
+      }
+    }
+  }
+}

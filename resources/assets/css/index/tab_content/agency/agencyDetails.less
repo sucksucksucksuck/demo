@@ -1,0 +1,367 @@
+/**
+ * Created by sucksuck on 2017/9/30.
+ */
+.agency-details {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  background-color: #fff;
+  margin: 12px;
+  overflow: hidden;
+  .orange {
+    color: #FF9933;
+  }
+  .blue {
+    color: #108DE9;
+  }
+  .green {
+    color: #13CD1D;
+  }
+  .wrap {
+    overflow-y: scroll;
+    &::-webkit-scrollbar {
+      width: 8px;
+      height: 10px;
+      background-color: transparent;
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: #BCC1CC;
+      border-radius: 10px;
+    }
+    .content {
+      flex: 1;
+      border: 1px solid #ccc;
+      margin: 20px 12px;
+      border-radius: 10px;
+      position: relative;
+      .title {
+        position: absolute;
+        background-color: #fff;
+        top: -12px;
+        left: 15px;
+        padding: 0 5px;
+        .iconfont {
+          color: #2394f4;
+        }
+      }
+      .info {
+        margin: 20px 40px 0 40px;
+        border-bottom: 1px dashed #ccc;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        > div {
+          display: flex;
+          flex-direction: row;
+          line-height: 40px;
+        }
+      }
+      .row {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        margin: 0 40px;
+        border-bottom: 1px dashed #ccc;
+        padding: 15px 0;
+        > div {
+          flex-direction: row;
+          display: flex;
+          align-items: center;
+          line-height: 20px;
+          &:nth-child(1) {
+            flex: 1;
+            div {
+              &:nth-child(1) {
+                flex: 1;
+                font-weight: 700;
+              }
+              &:nth-child(2) {
+                flex: 10;
+              }
+            }
+          }
+          &:nth-child(2) {
+            div {
+              i {
+                font-weight: 700;
+                padding: 0 10px;
+              }
+            }
+            .edit {
+              color: #2394f4;
+              border-bottom: 1px solid #2394f4;
+              cursor: pointer;
+            }
+            > i {
+              border-left: 1px solid #ccc;
+              height: 14px;
+              margin: 0 10px;
+            }
+          }
+        }
+      }
+      .agency {
+        padding: 20px 40px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+        text-align: center;
+        i {
+          border-left: 1px solid #ccc;
+          height: 60px;
+        }
+        > div {
+          div {
+            &:nth-child(2) {
+              font-size: 22px;
+              font-weight: 700;
+            }
+          }
+        }
+      }
+      .tip {
+        margin: 20px 40px 0 40px;
+        color: #8a6d3b;
+        background-color: #fcf8e3;
+        padding: 3px 10px;
+        border: 1px solid #faebcc;
+        border-radius: 4px;
+        .red {
+          color: red;
+          font-weight: 700;
+        }
+      }
+      .recharge {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        button {
+          border: 1px solid #2494F2;
+          background-color: #2494F2;
+          color: #fff;
+          border-radius: 4px;
+          outline: none;
+          cursor: pointer;
+          padding: 4px 12px;
+          font-weight: 400;
+          margin: 10px;
+        }
+        > div {
+          &:nth-child(1) {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            > div {
+              flex: 1;
+              display: flex;
+              margin: 10px;
+              align-items: center;
+              span {
+                flex: 1;
+                text-align: right;
+                line-height: 30px;
+                padding-right: 10px;
+              }
+              div {
+                flex: 5;
+                input {
+                  border-radius: 4px;
+                  height: 30px;
+                  outline: none;
+                  border: 1px solid #ccc;
+                }
+              }
+            }
+          }
+          &:nth-child(2) {
+            flex: 1;
+            line-height: 50px;
+          }
+        }
+      }
+      .add {
+        font-size: 12px;
+        margin: 20px 40px 15px 40px;
+        .item {
+          display: flex;
+          flex: 1;
+          flex-direction: row;
+          flex-wrap: wrap;
+          .checkbox {
+            cursor: pointer;
+            margin: 5px 5px;
+            padding-left: 23px;
+            background: url("../../../../image/modules/table/checkbox.png") no-repeat left;
+            display: flex;
+            align-items: center;
+          }
+          .checked {
+            background-image: url(../../../../image/modules/table/checkbox_checked.png);
+          }
+          button {
+            border: 1px solid #2494F2;
+            background-color: #2494F2;
+            color: #fff;
+            border-radius: 4px;
+            outline: none;
+            cursor: pointer;
+            padding: 0 12px;
+            font-weight: 400;
+            margin: 0 10px;
+            height: 30px;
+            line-height: 30px;
+          }
+          > div {
+            display: flex;
+            flex: 1;
+            flex-direction: row;
+            line-height: 40px;
+            > div {
+              &:nth-child(1) {
+                flex: 1;
+              }
+              &:nth-child(2) {
+                flex: 5;
+                label {
+                  margin-right: 20px;
+                  > input[type='radio'] {
+                    margin-right: 10px;
+                  }
+                }
+              }
+            }
+          }
+          input[type='text'], input[type='password'] {
+            border-radius: 4px;
+            height: 30px;
+            outline: none;
+            width: 230px;
+            border: 1px solid #ccc;
+            padding: 0 5px;
+          }
+        }
+      }
+    }
+    .button {
+      display: flex;
+      justify-content: center;
+      button {
+        border: 1px solid #2494F2;
+        background-color: #2494F2;
+        color: #fff;
+        border-radius: 4px;
+        outline: none;
+        cursor: pointer;
+        padding: 4px 12px;
+        font-weight: 400;
+        margin: 10px 10px;
+        &.white {
+          border: 1px solid #ccc;
+          background-color: #fff;
+          color: #000;
+        }
+      }
+    }
+  }
+
+}
+
+.agency-recharge {
+  width: 600px;
+  height: 80%;
+  .wrap {
+    .content {
+      width: 90%;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      position: relative;
+      margin-bottom: 20px;
+      .orange {
+        color: #FF9933;
+      }
+      .blue {
+        color: #108DE9;
+      }
+      .green {
+        color: #13CD1D;
+      }
+      .add {
+        margin: 20px 10px 0 10px;
+        padding: 10px;
+        font-size: 12px;
+        .item {
+          display: flex;
+          flex: 1;
+          flex-direction: row;
+          flex-wrap: wrap;
+          .center {
+            font-weight: 700;
+            margin-left: -50px;
+            text-align: center;
+            justify-content: center;
+          }
+          button {
+            border: 1px solid #2494F2;
+            background-color: #2494F2;
+            color: #fff;
+            border-radius: 4px;
+            outline: none;
+            cursor: pointer;
+            padding: 0 12px;
+            font-weight: 400;
+            margin: 0 10px;
+            height: 30px;
+            line-height: 30px;
+          }
+          > div {
+            display: flex;
+            flex: 1;
+            flex-direction: row;
+            line-height: 40px;
+            > div {
+              &:nth-child(1) {
+                flex: 2;
+              }
+              &:nth-child(2) {
+                flex: 3;
+                label {
+                  margin-right: 20px;
+                  > input[type='radio'] {
+                    margin-right: 10px;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      .title {
+        position: absolute;
+        background-color: #fff;
+        top: -12px;
+        left: 15px;
+        padding: 0 5px;
+        font-size: 16px;
+        .iconfont {
+          color: #2394f4;
+        }
+      }
+      .info {
+        margin: 20px 10px 0 10px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        > div {
+          display: flex;
+          flex-direction: row;
+          line-height: 40px;
+          justify-content: space-between;
+          > div {
+            flex: 1;
+          }
+        }
+      }
+    }
+  }
+}

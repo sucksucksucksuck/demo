@@ -1,0 +1,273 @@
+/**
+ * Created by sucksuck on 2017/5/5.
+ */
+.user-order {
+  display: flex;
+  background: #F2F4F5;
+  flex: 1;
+  flex-direction: column;
+  overflow-y: hidden;
+  width: 100%;
+  height: 100%;
+  .module-search {
+    .block {
+      margin: 0;
+      border-top: 1px solid #dae3e5;
+      .condition {
+        position: relative;
+        .statistics {
+          position: absolute;
+          bottom: -30px;
+          left: 160px;
+          span {
+            color: red;
+            position: absolute;
+            left: 100px;
+            top: 6px;
+            width: 200px;
+          }
+          button {
+            height: 29px;
+            width: 72px;
+            border: 1px solid;
+            border-radius: 4px;
+            cursor: pointer;
+            outline: none;
+            margin-right: 10px;
+            background: #fff;
+          }
+        }
+      }
+    }
+  }
+  .user-consume {
+    display: flex;
+    background: #fff;
+    padding: 12px;
+    margin: 12px;
+    justify-content: space-between;
+    align-items: center;
+    .details {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      .user-item {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        .sub-item {
+          flex: 1;
+          border-right: 1px solid #bcc1cc;
+          text-align: center;
+          margin: 10px 0;
+          padding: 0 20px;
+          white-space: nowrap;
+          &:last-child {
+            border-right: none;
+          }
+          div {
+            &:nth-child(1) {
+              color: #949699;
+              font-size: 14px;
+              padding-bottom: 18px;
+            }
+            &:nth-child(2) {
+              font-size: 20px;
+              color: #262A33;
+              &.money {
+                &:after {
+                  content: "元";
+                  font-size: 14px;
+                  color: #262A33;
+                }
+              }
+              &.percent {
+                &:after {
+                  content: "%";
+                  color: #EC3E27;
+                  font-size: 14px;
+                }
+              }
+
+            }
+          }
+        }
+      }
+      .user-table {
+        padding-top: 30px;
+        display: flex;
+        table {
+          width: 100%;
+          thead {
+            tr {
+              td {
+                text-align: center;
+                vertical-align: middle;
+                height: 36px;
+                background: #DAE8F3;
+                padding: 0;
+                font-size: 16px;
+                color: #262A33;
+                &:first-child {
+                  border-top-left-radius: 4px;
+                }
+                &:last-child {
+                  border-top-right-radius: 4px;
+                }
+              }
+            }
+          }
+          tbody {
+            tr {
+              &:nth-last-child(2) {
+                td {
+                  &:first-child {
+                    border-bottom-left-radius: 4px;
+                  }
+                }
+              }
+              &:last-child {
+                td {
+                  &:last-child {
+                    border-bottom-right-radius: 4px;
+                  }
+                }
+              }
+              &.money {
+                td {
+                  &:nth-child(n) {
+                    &:after {
+                      content: '元';
+                      font-size: 14px;
+                    }
+                  }
+                  &:first-child {
+                    &:after {
+                      content: "";
+                    }
+                  }
+                }
+              }
+              &.percent {
+                td {
+                  &:nth-child(n) {
+                    &:after {
+                      content: '%';
+                      font-size: 14px;
+                    }
+                  }
+                  &:first-child {
+                    width: 150px;
+                    &:after {
+                      content: "";
+                    }
+                  }
+                }
+              }
+              &.red {
+                td {
+                  color: #ec3e27;
+                  &:nth-child(n) {
+                    &:after {
+                      content: '元';
+                      font-size: 14px;
+                    }
+                  }
+                  &:first-child {
+                    &:after {
+                      content: "";
+                    }
+                  }
+                }
+              }
+              td {
+                font-size: 20px;
+                color: #262a33;
+                text-align: center;
+                vertical-align: middle;
+                height: 40px;
+                padding: 0;
+                border-right: 1px solid #dae3e5;
+                border-bottom: 1px solid #dae3e5;
+                &:first-child {
+                  border-left: 1px solid #dae3e5;
+                  font-size: 16px;
+                  color: #262a33;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    .date {
+      font-size: 14px;
+      line-height: 26px;
+      button {
+        font-size: 14px;
+        border: 1px solid #262a33;
+        border-radius: 4px;
+        display: inline-block;
+        width: 90px;
+        line-height: 30px;
+        text-align: center;
+        box-sizing: border-box;
+        margin-right: 10px;
+        background-color: #fff;
+        cursor: pointer;
+        position: relative;
+        outline: none;
+        &:hover {
+          border: 1px solid #54A5F4;
+          color: #54A5F4;
+        }
+      }
+    }
+    .cartogram {
+      padding-top: 20px;
+      background-color: #fff;
+      margin-left: 30px;
+      width: 100%;
+      display: flex;
+    }
+  }
+  .user-order-table {
+    display: flex;
+    flex: 1;
+    min-width: 1000px;
+    .module-table {
+      padding: 12px;
+      table {
+        thead {
+          tr {
+            td {
+              background-color: #DAE8F3;
+              &:first-child {
+                border-top-left-radius: 4px;
+              }
+              &:last-child {
+                border-top-right-radius: 4px;
+              }
+            }
+          }
+        }
+        tbody {
+          .order-status {
+            color: #ec3e27;
+            font-weight: bold;
+          }
+          tr {
+            td {
+              &:first-child {
+                border-left: 1px solid #DAE3E5;
+              }
+              height: 40px;
+              border-right: 1px solid #DAE3E5;
+              background-color: #fff;
+            }
+          }
+        }
+      }
+    }
+  }
+}

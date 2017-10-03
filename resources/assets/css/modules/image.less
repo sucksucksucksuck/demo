@@ -1,0 +1,97 @@
+/**
+ * Created by sucksuck on 2017/6/6.
+ */
+.image-upload {
+  width: 502px;
+  background: #fff;
+  border-radius: 4px;
+  > .title {
+    line-height: 48px;
+    font-size: 18px;
+    color: #262A33;
+    padding-left: 14px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    &:before {
+      content: '';
+      margin-right: 6px;
+      width: 4px;
+      height: 18px;
+      background: #1A92F4;
+      border-radius: 10px;
+    }
+    .close {
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: 48px;
+      text-align: center;
+      line-height: 48px;
+      font-size: 20px;
+      border-top-right-radius: 4px;
+      &:before {
+        content: '×';
+      }
+      &:hover {
+        background-color: #EC3E27;
+        color: #fff;
+      }
+    }
+  }
+  .image-upload-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    line-height: 28px;
+    .tab-bar {
+      display: flex;
+      flex-direction: row;
+      > div {
+        margin: 0 20px;
+        padding: 0 15px;
+        cursor: pointer;
+        &.active {
+          color: #1A92F4;
+          border-bottom: 3px solid #1A92F4;
+        }
+      }
+    }
+    .input >div{
+      margin: 10px 0;
+    }
+    input[type="file"] {
+      display: none;
+    }
+    input[type="text"] {
+      outline:none;
+      border: 1px solid #7E866C;
+      border-radius: 4px;
+      line-height:24px;
+    }
+    button {
+      width: 80px;
+      height: 26px;
+      border: 1px solid #7E866C;
+      border-radius: 4px;
+      background-color: #FFF;
+      outline: none;
+      cursor: pointer;
+      margin: 0 8px;
+      &.blue {
+        border: 1px solid #2494F2;
+        background-color: #2494F2;
+        color: #fff;
+      }
+    }
+    .button {
+      display: flex;
+      justify-content: center;
+      margin: 15px 0;
+
+    }
+
+  }
+}

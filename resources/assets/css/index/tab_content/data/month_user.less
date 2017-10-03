@@ -1,0 +1,134 @@
+/**
+ * Created by sucksuck on 2017/6/26.
+ */
+.month-user {
+  font-size: 14px;
+  color: #262A33;
+  display: flex;
+  flex: 1;
+  width: 100%;
+  flex-direction: column;
+  background-color: #F2F4F5;
+  .navigator {
+    justify-content: flex-end;
+  }
+  .list_null {
+    background-color: #fff;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 0 14px 14px;
+    background: url("../../../../image/index/list_null.png") no-repeat 50% 36%;
+    background-color: #fff;
+  }
+  .hidden {
+    height: 15px;
+    width: 100%;
+    background-color: #F2F4F5;
+    flex-shrink: 0;
+  }
+  .user-table {
+    display: flex;
+    flex: 1;
+    background-color: #fff;
+    flex-direction: row;
+    padding: 10px 10px 0 10px;
+    margin-left: 15px;
+    overflow-y: auto;
+    > table {
+      position: fixed;
+      width: 72px;
+      border-spacing: 0;
+      top: 85px;
+      line-height: 28px;
+      background-color: #fff;
+      font-size: 14px;
+      text-align: center;
+    }
+    &::-webkit-scrollbar {
+      width: 8px;
+      height: 14px;
+      background-color: transparent;
+      margin: 0;
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: #BCC1CC;
+      border-radius: 8px;
+    }
+    .table-content {
+      overflow: scroll;
+      display: flex;
+      flex: 1;
+      background-color: #fff;
+      flex-direction: row;
+      &::-webkit-scrollbar {
+        width: 8px;
+        height: 10px;
+        background-color: transparent;
+        margin: 0;
+      }
+      &::-webkit-scrollbar-thumb {
+        background-color: #BCC1CC;
+        border-radius: 8px;
+
+      }
+      table {
+        margin: 0 10px 0 0;
+        font-size: 14px;
+        border-spacing: 0;
+        width: 100%;
+        text-align: center;
+        line-height: 28px;
+        height: 28px;
+        thead {
+          td {
+            padding: 0;
+            border: 1px solid #DAE3E5;
+            background-color: #DAE8F3;
+            box-sizing: border-box;
+            &:last-child {
+              border-top-right-radius: 8px;
+            }
+          }
+        }
+        tbody {
+          tr {
+            .border-none {
+              border: none;
+              td {
+                padding: 0;
+                min-width: 50px;
+                border-right: 1px solid #dae3e5;
+                border-bottom: 1px solid #dae3e5;
+              }
+              &:first-child {
+                border-left: none !important;
+              }
+            }
+
+            > td {
+              min-width: 50px;
+              padding:0 5px;
+              border-right: 1px solid #dae3e5;
+              border-bottom: 1px solid #dae3e5;
+              &:first-child {
+                border-left: 1px solid #dae3e5;
+              }
+              &:nth-child(6n-4){
+                background-color: #F5F7F7;
+              }
+              &:nth-child(6n-3){
+                background-color: #F5F7F7;
+              }
+              &:nth-child(6n-2){
+                background-color: #F5F7F7;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

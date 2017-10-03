@@ -1,0 +1,99 @@
+.module-paging {
+  text-align: right;
+  padding: 10px 20px;
+  background-color: #fff;
+  margin: 0 11px 0 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+  transition: width .3s;
+  .button {
+    display: flex;
+    button {
+      font-size: 16px;
+      height: 32px;
+      line-height: 32px;
+      min-width: 32px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      background-color: #fff;
+      margin: 0 4px;
+      padding: 0 8px;
+      outline: none;
+      cursor: pointer;
+      &:hover {
+        border: 1px solid #2494F2;
+        color: #2494F2;
+      }
+      &.front {
+        background-color: #2494F2;
+        font-size: 25px;
+        color: #fff;
+        &.unactive {
+          background-color: #DCE0E0;
+          cursor: auto;
+
+        }
+        &:hover {
+          border: none;
+        }
+        &:before {
+          font-family: FontAwesome, serif;
+          content: "\f0d9";
+        }
+      }
+      &.back {
+        background-color: #2494F2;
+        color: #fff;
+        font-size: 25px;
+        &:hover {
+          border: none;
+        }
+        &.unactive {
+          background-color: #DCE0E0;
+          cursor: auto;
+
+        }
+        &:before {
+          font-family: FontAwesome, serif;
+          content: "\f0da";
+        }
+      }
+      &.ok {
+        width: 60px;
+        background-color: #2494F2;
+        color: #FFFFFF;
+        cursor: pointer;
+      }
+      &.active {
+        background-color: #2494F2;
+        color: #FFFFFF;
+      }
+    }
+    .input {
+      display: flex;
+      align-items: center;
+      input {
+        outline: none;
+        width: 32px;
+        height: 32px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        text-align: center;
+        margin: 0 4px;
+        padding: 0;
+      }
+    }
+    .more {
+      height: 32px;
+      width: 32px;
+      text-align: center;
+      line-height: 32px;
+      &:before {
+        font-family: FontAwesome, serif;
+        content: "\f141";
+      }
+    }
+  }
+}
