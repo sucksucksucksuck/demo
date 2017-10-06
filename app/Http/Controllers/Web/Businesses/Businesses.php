@@ -39,7 +39,7 @@ class Businesses extends BusinessesManage
       $query->orWhereBetween('created_at', [$start_time, $end_time]);
     }
     $rows = $query
-        ->select(['bus.id', 'bus.bus_id', 'bus.bus_account', 'bus.status', 'bus.coins', 'bus.amount'])
+        ->select(['bus.id', 'bus.bus_id', 'bus.bank_account', 'bus.status', 'bus.coins', 'bus.amount'])
         ->where('bus.status', '=', $status)
         //->join('business_coins as bc', 'bus.bus_id', '=', 'bc.bus_id', 'right')
 //        ->join('business_coin_logs as bcl', 'bus.bus_id', '=', 'bcl.bus_id', 'left')
@@ -65,21 +65,24 @@ class Businesses extends BusinessesManage
   {
     $data = $request->all();
 
-    if (!$request->has('bus_account')
-        || empty($data['bus_account'])
+    if (!$request->has('bank_account')
+        || empty($data['bank_account'])
         || !$request->has('phone')
         || empty('phone')
     ) {
       return $this->ajax_return(1, '请填写相关信息!');
     }
+    if (!$request->has('discount') || empty($data['discount'])) {
+      return $this->ajax_return(1, '请填写折扣值!');
+    }
     $business = DB::table('businesses')
-        ->select(['phone', 'bus_account', 'wechat'])
-        ->where('bus_account', '=', $data['bus_account'])
+        ->select(['phone', 'bank_account', 'wechat'])
+        ->where('bank_account', '=', $data['bank_account'])
         ->orWhere('phone', '=', $data['phone'])
-        ->toSql();
+        ->first();
 
     if ($business !== null) {
-      return $this->ajax_return(1, "账号【{$data['bus_account']}】或手机号【{$data['phone']}】已被注册!");
+      return $this->ajax_return(1, "账号【{$data['bank_account']}】或手机号【{$data['phone']}】已被注册!");
     }
 
     $password = '852741';
@@ -87,7 +90,7 @@ class Businesses extends BusinessesManage
       $password = $data['password'];
     }
 
-    $oldUser = DB::table('businesses')->select('bus_id')->orderByDesc('id')->first();
+    $oldUser = DB::table('businesses')->select('bank_id')->orderByDesc('id')->first();
 
     $bus_id = 10000;
     if ($oldUser !== null) {
@@ -95,26 +98,26 @@ class Businesses extends BusinessesManage
     }
 
     $save_data = [
-        'bus_id' => $bus_id,
-        'bus_account' => $data['bus_account'],
+        'bank_id' => $bus_id,
+        'bank_account' => $data['bank_account'],
         'password' => Helper::password($password),
         'phone' => $data['phone'],
         'wechat' => $data['wechat'],
         'created_at' => date('Y-m-d H:i:s'),
     ];
 
+    DB::beginTransaction();
     try {
-      $result = DB::table('businesses')
-          ->insert($save_data);
-      $disResult = DB::table('business_dis')->insert(['b_id' => $bus_id, 'discount' => $data['discount']]);
+      $result = DB::connection('pgyg')->table('businesses')->insert($save_data);
+      $disResult = DB::connection('pgyg')->table('business_dis')->insert(['bank_id' => $bus_id, 'discount' => $data['discount']]);
 
-      DB::commit();
       if ($result && $disResult) {
+        DB::commit();
         return ['errcode' => 0, 'msg' => '添加成功'];
       }
     } catch (\Exception $e) {
       DB::rollBack();
-      return ['errcode' => 1, 'msg' => '添加失败'];
+      return ['errcode' => 1, 'msg' => '添加失败' . $e->getMessage()];
     }
     return ['errcode' => 1, 'msg' => '添加失败'];
   }
@@ -128,7 +131,7 @@ class Businesses extends BusinessesManage
   {
 
     $data = $request->all();
-    if (empty($data['bus_id'])) {
+    if (empty($data['bank_id'])) {
       return $this->ajax_return(1, '请填写相关银商ID');
     }
     if (empty($data['coin_number'])) {
@@ -142,9 +145,8 @@ class Businesses extends BusinessesManage
     $coinsLogQuery = DB::table('business_coin_logs');
 
     $coinsRow = $coinsQuery->select(['coins', 'amount', 'recharge_total'])
-        ->where('bus_id', '=', $data['bus_id'])
+        ->where(['bank_id' => $data['bank_id']])
         ->first();//获取银商充值数据
-
 
     $coin_number = 0; //剩余的金币
     $amount = 0; //总充值金额
@@ -159,7 +161,7 @@ class Businesses extends BusinessesManage
     $totalCoins = (intval($data['coin_number']) + $coin_number);
     $totalAmount = (floatval($data['amount']) + $amount);
     $coins = [//银商金币表
-        'bus_id' => $data['bus_id'],
+        'bank_id' => $data['bank_id'],
         'coins' => $totalCoins, //向平台充值 当前充值数加上原始数据 给游戏用户充值 反之
         'amount' => $totalAmount, //当前金额加上原来金额
         'created_at' => date('Y-m-d H:i:s'),
@@ -170,8 +172,8 @@ class Businesses extends BusinessesManage
     ];
 
     $coinsLogs = [//银商金币充值记录表
-        'bus_id' => $data['bus_id'],
-        'bus_account' => $data['bus_account'],
+        'bank_id' => $data['bank_id'],
+        'bank_account' => $data['bank_account'],
         'type' => 2,
         'coin_number' => $data['coin_number'], //当前充值金币
         'coin_synumber' => $totalCoins, //+相加当前金币
@@ -188,15 +190,14 @@ class Businesses extends BusinessesManage
       $result = $coinsLogQuery->insert($coinsLogs);
       if ($coinsRow !== null) {
         $coins['update_at'] = date('Y-m-d H:i:s'); //充值时间
-        $coinRes = $coinsQuery->where(['bus_id' => $data['bus_id'], 'type' => 2])
+        $coinRes = $coinsQuery->where(['bank_id' => $data['bank_id']])
             ->update($coins);
       } else {
         $coins['created_at'] = date('Y-m-d H:i:s');//第一次充值时间
-        $coins['type'] = 2;
         $coinRes = $coinsQuery->insert($coins);
       }
       //更改银商 金币和金额
-      $busRes = DB::table('businesses')->where('bus_id', '=', $data['bus_id'])->update($bankUserData);
+      $busRes = DB::table('businesses')->where('bank_id', '=', $data['bank_id'])->update($bankUserData);
 
       if ($result && $coinRes !== false && $busRes !== false) {
         DB::commit();
@@ -216,7 +217,7 @@ class Businesses extends BusinessesManage
    */
   public function findBusiness(Request $request)
   {
-    $bus_id = $request->input('bus_id');
+    $bus_id = $request->input('bank_id');
     if (empty($bus_id)) {
       //return ['errcode' => 1, 'msg' => '请输入查询银商ID'];
       return $this->ajax_return(1, '请输入查询的银商ID');
@@ -224,14 +225,14 @@ class Businesses extends BusinessesManage
 
     $buss = DB::table('businesses')
         ->select([
-            'bus_id',
-            'bus_account',
+            'bank_id',
+            'bank_account',
             'phone',
             'email',
             'qq',
             'wechat',
             'created_at',
-        ])->where('bus_id', '=', $bus_id)->first();
+        ])->where('bank_id', '=', $bus_id)->first();
 
     if ($buss === null) {
       return $this->ajax_return(0, '未找到相关用户');
@@ -239,7 +240,7 @@ class Businesses extends BusinessesManage
     $buss = json_decode(json_encode($buss), true);
     //查询金币余额
     $coin = DB::table('business_coins')
-        ->select(['coins'])->where('bus_id', '=', $bus_id)->first();
+        ->select(['coins'])->where('bank_id', '=', $bus_id)->first();
 
     $coins = 0;
     if ($coin !== null) {
@@ -265,7 +266,7 @@ class Businesses extends BusinessesManage
     $businessLogQuery = DB::table('business_coin_logs');
 
     if ($request->has('keyword') && !empty($data['keyword'])) {
-      $businessLogQuery->where('bus_id');
+      $businessLogQuery->where('bank_id');
     }
     if ($request->has('type') && $data['type']) {
       $businessLogQuery->where('type', '=', $data['type']);
@@ -282,8 +283,8 @@ class Businesses extends BusinessesManage
     }
 
     $businessData = $businessLogQuery->select([
-        'bus_id',
-        'bus_account',
+        'bank_id',
+        'bank_account',
         'type',
         'coin_number',
         'coin_synumber',
@@ -346,37 +347,52 @@ class Businesses extends BusinessesManage
    */
   public function lookInfo(Request $request)
   {
-    $bus_id = $request->input('bus_id');
+    $bus_id = $request->input('bank_id');
     if ($bus_id) {
       $infoQuery = DB::table('businesses');
       $disQuery = DB::table('business_dis');
 
       $infoObj = $infoQuery->select([
-          'bus_id',
+          'bank_id',
           'coins',//剩余金币
-          'bus_account',
+          'bank_account',
           'phone',
           'email',
           'wechat',
-          'qq'])->where('bus_id', '=', $bus_id)->first();
+          'qq'])->where('bank_id', '=', $bus_id)->first();
 
-      $disObj = $disQuery->select(['discount'])->where('b_id', '=', $bus_id)->first();
+      $disObj = $disQuery->select(['discount'])->where('bank_id', '=', $bus_id)->first();
 
       $platFinance = DB::table('business_coins')->select([
           'recharge_total',
-          'recharge_coins',
+//          'recharge_coins',
           'recharge_amount',
           'recharge_last_amount',
           'updated_at',
-      ])->where(['bus_id' => $bus_id, 'type' => 2])->first(); //查询银商在平台充值的财务信息
+      ])->where(['bank_id' => $bus_id])->first(); //查询银商在平台充值的财务信息
 
-      $userFinance = DB::table('business_coins')->select([
-          'recharge_total',
-          'recharge_coins',
-          'recharge_amount',
-          'recharge_last_amount',
-          'updated_at',
-      ])->where(['bus_id' => $bus_id, 'type' => 1])->first();//查询银商给游戏用户充值的财务信息
+//      $userFinance = DB::table('business_coins')->select([
+//          'recharge_total',
+//          'recharge_coins',
+//          'recharge_amount',
+//          'recharge_last_amount',
+//          'updated_at',
+//      ])->where(['bus_id' => $bus_id, 'type' => 1])->first();//查询银商给游戏用户充值的财务信息
+//      $userFinance = DB::table('game_user_recharge')
+//          ->select('total_count', 'last_time', 'last_amount', DB::raw('SUM(total_amount) as total_amount'))
+//          ->where(['bank_id' => $bus_id])->first();
+      $total_amount = DB::table('game_user_recharge')->sum('total_amount');
+      $total_count = DB::table('game_user_recharge')->sum('total_count');
+      $max_time = DB::table('game_user_recharge')->max('last_time');
+      $last_amount = DB::table('game_user_recharge')
+          ->select('last_amount')
+          ->where('bank_id', '=', $bus_id)
+          ->orderByDesc('last_time')
+          ->first();
+      $userFinance['total_amount'] = $total_amount;
+      $userFinance['total_count'] = $total_count;
+      $userFinance['last_time'] = $max_time;
+      $userFinance['last_amount'] = $last_amount;
 
       if (!$infoObj) {
         return $this->ajax_return(1, '查询失败');
@@ -391,5 +407,120 @@ class Businesses extends BusinessesManage
 
       return $this->ajax_return(0, 'success', $infoObj);
     }
+  }
+
+  /**
+   * 银商代理充值
+   * @param Request $request
+   * @return array
+   */
+  public function proxyRecharge(Request $request)
+  {
+    $game_id = $request->input('game_id', '');
+    $game_nickname = $request->input('nickname', '');
+    $amount = $request->input('amount', 0);
+
+    if (!$game_id) {
+      return $this->ajax_return(1, '请输入游戏用户ID');
+    }
+    if (!$amount) {
+      return $this->ajax_return(1, '请填写你要充值的金额');
+    }
+
+    $data = [
+        'game_id' => $game_id,
+        'game_nickname' => $game_nickname,
+        'amount' => $amount,
+    ];
+    $orderId = 'D' . time() . rand(1000, 9999);
+    $coins = $amount * 100;
+    $created_at = date('Y-m-d H:i:s');
+
+    $data['created_at'] = $created_at;
+    $data['coin_number'] = $coins;
+    $data['order_id'] = $orderId;
+
+    $result = DB::table('business_coin_logs')->insert($data);
+
+    if ($result === true) {
+      return $this->ajax_return(0, '充值订单已提交成功!');
+    }
+    return $this->ajax_return(1, '操作失败!');
+  }
+
+  /**
+   * 代理充值审核
+   * @param Request $request
+   * @return array
+   */
+  public function proxyAudit(Request $request)
+  {
+    $id = $request->input('id', 0);//business_coin_logs 主键
+    $status = $request->input('status', 0);
+    $remark = $request->input('remark', '');
+
+    if (!$id || !$status) {
+      return $this->ajax_return(1, '非法的操作!');
+    }
+
+    $coinRow = DB::table('business_coin_logs')->where('id', '=', $id)->first();
+
+    if ($coinRow) {
+      DB::beginTransaction();
+      try {
+        //调用C#接口 修改金币数量
+
+        $coinsLogs = [
+            'status' => $status
+        ];
+        //代理数据操作
+        if ($status == 3) { //如果审核不通过
+          $coinsLogs['remark'] = $remark;
+        }
+        // 修改 business_coin_logs 数据库status 字段
+        $result = DB::table('business_coin_logs')->where('id', '=', $id)->update($coinsLogs);
+
+        //写入本次充值数据 到game_user_recharge_log
+        $userLogs = [
+            'order_id' => $coinRow->order_id,
+            'bank_id' => $coinRow->bank_id,
+            'game_username' => $coinRow->game_username,
+            'coins' => $coinRow->coins,
+            'amount' => $coinRow->amount,
+            'created_at' => $coinRow->created_at,
+        ];
+        $insRes = DB::table('game_user_recharge_log')->insert($userLogs);
+
+        //更新或者插入 game_user_recharge 表
+        $proxyUser = DB::table('game_user_recharge')
+            ->where(['bank_id' => $coinRow->bank_id, 'game_id' => $coinRow->game_id])
+            ->first();
+        $userReCharge = [
+            'total_amount' => ($proxyUser->total_amount + $coinRow->amount), //原始金额+本次代理充值的金额
+            'total_count' => ++$proxyUser->total_count,
+            'last_amount' => $coinRow->amount,
+            'last_time' => $coinRow->created_at
+        ];
+        if ($proxyUser) {
+          $updRes = DB::table('game_user_recharge')
+              ->where(['bank_id' => $coinRow->bank_id, 'game_id' => $coinRow->game_id])
+              ->update($userReCharge);
+        } else {
+          $userReCharge['bank_id'] = $coinRow->bank_id;
+          $userReCharge['game_id'] = $coinRow->game_id;
+          $updRes = DB::table('game_user_recharge')
+              ->insert($userReCharge);
+        }
+
+        if ($result !== false && $insRes !== false && $updRes !== false) {
+          DB::commit();
+          return $this->ajax_return(0, '操作成功!');
+        }
+      } catch (\Exception $e) {
+        DB::rollBack();
+        return $this->ajax_return(1, '充值失败!');
+      }
+    }
+    return $this->ajax_return(1, '操作失败!');
   }
 }

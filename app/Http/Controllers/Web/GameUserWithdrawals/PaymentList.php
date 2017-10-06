@@ -10,6 +10,7 @@ namespace App\Http\Controllers\Web\GameUserWithdrawals;
 
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 /**
  * 已打款

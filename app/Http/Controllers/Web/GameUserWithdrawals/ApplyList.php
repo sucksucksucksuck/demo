@@ -66,7 +66,7 @@ class ApplyList extends AbsGameUserWithdrawals
   }
 
   /**
-   * 审核
+   * 提现审核
    * @param Request $request
    * @return array
    */
@@ -74,23 +74,49 @@ class ApplyList extends AbsGameUserWithdrawals
   {
     $status = $request->input('status', 0);
     $id = $request->input('id', 0);
-    if (!$id) {
+    $remark = $request->input('remark', '');
+    if (!$id || !$status) {
+      return $this->ajax_return(1, '非法操作!');
+    }
+    $user = DB::table('game_user_withdrawals')->where(['id', '=', $id])->first();
+    if (!$user) {
       return $this->ajax_return(1, '操作失败!');
     }
-    if ($status > 0) {
-      $data = [
-          'status' => $status,
-      ];
-      if ($status == 2) {
-        $data['remark'] = $request->input('remark', '不允许的操作');
-      }
-      /*此处需要发送审核请求 调用游戏端接口*/
+    $data = [
+        'status' => $status,
+        'remark' => $remark,
+    ];
+    /*此处需要发送审核请求 调用游戏端接口*/
+    $apiParam = [ //接口参数
+        'game_id' => $user['game_id'],
+        'order_id' => $user['order_id'],
+        'status' => $status,
+        'remark' => $data['remark']
+    ];
 
-      $result = DB::table('game_user_withdrawals')->where('id', '=', $id)->update($data);
-      if ($result !== false) {
-        return $this->ajax_return(0, '操作成功!');
-      }
+    if ($status == 2) {
+      $data['remark'] = '不允许的操作';
     }
+    $result = DB::table('game_user_withdrawals')->where('id', '=', $id)->update($data);
+    $userRecharge = DB::table('game_user_recharge')->where(['game_id' => $user['game_id']])->first();
+    $rechargeData = [
+        'exp_amount' => ($userRecharge + $user['exp_amount']),//总提现 加上本次提现金额
+        'exp_count' => ++$userRecharge->exp_count,
+        'exp_last_time' => $userRecharge->created_at,
+    ];
+    if ($userRecharge) {
+      $res = DB::table('game_user_recharge')
+          ->where('game_id', '=', $user['game_id'])
+          ->update($rechargeData);
+    } else {
+      $rechargeData['game_id'] = $user['game_id'];
+      $res = DB::table('game_user_recharge')->insert($rechargeData);
+    }
+
+    if ($result !== false && $res !== false) {
+      return $this->ajax_return(0, '操作成功!');
+    }
+
     return $this->ajax_return(1, '操作失败!');
   }
 
